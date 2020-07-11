@@ -11,14 +11,16 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
     private WifiP2pManager wifiP2pManager;
     private WifiP2pManager.Channel channel;
-    private MainActivity mainActivity;
+    private LobbyActivity lobbyActivity;
 
 
-    public WifiBroadcastReceiver(WifiP2pManager wifiP2pManager, WifiP2pManager.Channel channel, MainActivity mainActivity) {
+    public WifiBroadcastReceiver(WifiP2pManager wifiP2pManager, WifiP2pManager.Channel channel, LobbyActivity lobbyActivity) {
         this.wifiP2pManager = wifiP2pManager;
         this.channel = channel;
-        this.mainActivity = mainActivity;
+        this.lobbyActivity = lobbyActivity;
     }
+
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -49,7 +51,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             // that.
             if (wifiP2pManager !=null)
             {
-                wifiP2pManager.requestPeers(channel,mainActivity.peerListListener);
+                wifiP2pManager.requestPeers(channel, lobbyActivity.peerListListener);
             }
         }
         else if (wifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
@@ -64,11 +66,11 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             NetworkInfo networkInfo=(NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected())
             {
-                wifiP2pManager.requestConnectionInfo(channel,mainActivity.connectionInfoListener);
+                wifiP2pManager.requestConnectionInfo(channel, lobbyActivity.connectionInfoListener);
             }
             else
             {
-                mainActivity.status.setText("Device Disconnected");
+//                lobbyActivity.status.setText("Device Disconnected");
             }
 
         }
