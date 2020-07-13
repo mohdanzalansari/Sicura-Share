@@ -13,9 +13,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -97,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 String msg=mssg.getText().toString();
-                sendReceive.write(msg.getBytes());
+//                sendReceive.write(msg.getBytes());
+                ObjectModal objectModal= new ObjectModal(msg);
+                sendReceive.writeObject(objectModal);
 
             }
         });
@@ -113,8 +118,11 @@ public class MainActivity extends AppCompatActivity {
             {
                 case MESSAGE_READ:
 
-                    byte[] readBuff= (byte[]) msg.obj;
-                    String tempMsg= new String(readBuff,0,msg.arg1);
+//                    byte[] readBuff= (byte[]) msg.obj;
+//                    String tempMsg= new String(readBuff,0,msg.arg1);
+
+                    ObjectModal ob= (ObjectModal) msg.obj;
+                    String tempMsg=ob.getMsg();
                     temp_message.setText(tempMsg);
                     break;
             }
@@ -150,6 +158,9 @@ public class MainActivity extends AppCompatActivity {
         private Socket socket;
         private InputStream inputStream;
         private OutputStream outputStream;
+        private ObjectOutputStream objectOutputStream;
+        private ObjectInputStream objectInputStream;
+        ObjectModal obj=null;
 
         public SendReceive(Socket skt)
         {
@@ -158,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
 
                 inputStream=socket.getInputStream();
                 outputStream=socket.getOutputStream();
+                objectOutputStream=new ObjectOutputStream(outputStream);
+                objectInputStream=new ObjectInputStream(inputStream);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -167,22 +180,32 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            byte[] buffer=new byte[1024];
-            int bytes;
+//            byte[] buffer=new byte[1024];
+//            int bytes;
+//
+//            while(socket!=null)
+//            {
+//                try {
+//                    bytes=inputStream.read(buffer);
+//                    if (bytes>0)
+//                    {
+//                        handler.obtainMessage(MESSAGE_READ,bytes,-1,buffer).sendToTarget();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
-            while(socket!=null)
-            {
+            while (socket != null) {
                 try {
-                    bytes=inputStream.read(buffer);
-                    if (bytes>0)
-                    {
-                        handler.obtainMessage(MESSAGE_READ,bytes,-1,buffer).sendToTarget();
-                    }
+                    obj = (ObjectModal) objectInputStream.readObject();
+                    handler.obtainMessage(MESSAGE_READ, -1, -1, obj).sendToTarget();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
         }
 
         public void write(final byte[] bytes)
@@ -205,6 +228,23 @@ public class MainActivity extends AppCompatActivity {
                     {e.printStackTrace();}
                 }}).start();
 
+
+        }
+        public void writeObject(final ObjectModal object)
+        {
+
+            new Thread(new Runnable(){
+
+                @Override
+                public void run()
+                {
+                    try {
+                        objectOutputStream.writeObject(object);
+                    } catch (IOException e) {
+                        Toast.makeText(MainActivity.this, "Can't send Object", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }}).start();
 
         }
     }
