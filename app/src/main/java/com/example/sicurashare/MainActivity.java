@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     TextView temp_message;
     EditText mssg;
 
-
+    final AES aes=new AES();
 
     WifiBroadcastReceiver receiver;
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         temp_message=findViewById(R.id.temp_msg);
         mssg=findViewById(R.id.message);
+
 
 
 //        serverClass=new ServerClass();
@@ -100,8 +102,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 String msg=mssg.getText().toString();
+
+                byte[] cipherText= aes.encrypt(msg,"asdfg");
 //                sendReceive.write(msg.getBytes());
-                ObjectModal objectModal= new ObjectModal(msg);
+                ObjectModal objectModal= new ObjectModal(cipherText);
                 sendReceive.writeObject(objectModal);
 
             }
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 //                    String tempMsg= new String(readBuff,0,msg.arg1);
 
                     ObjectModal ob= (ObjectModal) msg.obj;
-                    String tempMsg=ob.getMsg();
+                    String tempMsg=aes.decrypt(ob.getCipertext(),"asdfg");
                     temp_message.setText(tempMsg);
                     break;
             }

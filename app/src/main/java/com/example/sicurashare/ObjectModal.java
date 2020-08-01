@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 public class ObjectModal implements Serializable {
 
-    String msg;
+    byte[] cipertext;
 
-    public String getMsg() {
-        return msg;
+    public ObjectModal(byte[] cipertext) {
+        this.cipertext = cipertext;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public byte[] getCipertext() {
+        return cipertext;
     }
 
-    public ObjectModal(String msg) {
-        this.msg = msg;
+    public void setCipertext(byte[] cipertext) {
+        this.cipertext = cipertext;
     }
 }
