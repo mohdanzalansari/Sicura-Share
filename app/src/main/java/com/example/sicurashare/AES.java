@@ -1,8 +1,5 @@
 package com.example.sicurashare;
 
-
-
-
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -24,14 +21,14 @@ public class AES {
 
     public static void setKey(String mkey) {
 
-        MessageDigest messageDigest=null;
+        MessageDigest messageDigest = null;
 
         try {
-            key=mkey.getBytes("UTF-8");
-            messageDigest=MessageDigest.getInstance("SHA-1");
-            key=messageDigest.digest(key);
-            key= Arrays.copyOf(key,16);
-            secretKey=new SecretKeySpec(key,"AES");
+            key = mkey.getBytes("UTF-8");
+            messageDigest = MessageDigest.getInstance("SHA-1");
+            key = messageDigest.digest(key);
+            key = Arrays.copyOf(key, 16);
+            secretKey = new SecretKeySpec(key, "AES");
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -41,13 +38,12 @@ public class AES {
 
     }
 
-    public static byte[] encrypt(String string, String secKey)
-    {
+    public static byte[] encrypt(String string, String secKey) {
         setKey(secKey);
         try {
 
-            Cipher cipher= Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE,secretKey);
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] cipherText = cipher.doFinal(string.getBytes());
             return cipherText;
 
@@ -66,11 +62,10 @@ public class AES {
         return null;
     }
 
-    public static String decrypt(byte[] cipherText,String secKey)
-    {
+    public static String decrypt(byte[] cipherText, String secKey) {
         setKey(secKey);
         try {
-            Cipher cipher= Cipher.getInstance("AES");
+            Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] decryptedText = cipher.doFinal(cipherText);
             return new String(decryptedText, StandardCharsets.UTF_8);

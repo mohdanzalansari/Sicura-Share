@@ -3,15 +3,15 @@ package com.example.sicurashare;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.net.wifi.p2p.WifiP2pInfo;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final int MESSAGE_READ=1;
+    static final int MESSAGE_READ = 1;
 
 
     ServerClass serverClass;
@@ -38,8 +38,15 @@ public class MainActivity extends AppCompatActivity {
     Button send_btn;
     TextView temp_message;
     EditText mssg;
+    CheckBox passwordSet;
 
-    final AES aes=new AES();
+    private static String password = null;
+
+    LinearLayout passwordsetterLinearLayout;
+    EditText inputPasswordBox;
+    Button passwordSetter;
+
+    final AES aes = new AES();
 
     WifiBroadcastReceiver receiver;
 
@@ -49,28 +56,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         String user = getIntent().getStringExtra("user");
-        InetAddress address=(InetAddress) getIntent().getSerializableExtra("inetaddress");
+        InetAddress address = (InetAddress) getIntent().getSerializableExtra("inetaddress");
 
-        send_btn=findViewById(R.id.sendbtn);
+        send_btn = findViewById(R.id.sendbtn);
 
-        temp_message=findViewById(R.id.temp_msg);
-        mssg=findViewById(R.id.message);
-
+        temp_message = findViewById(R.id.temp_msg);
+        mssg = findViewById(R.id.message);
+        passwordSet = findViewById(R.id.passwordcheckBox);
+        passwordsetterLinearLayout = findViewById(R.id.psdlinearlayout);
+        inputPasswordBox = findViewById(R.id.passwordBox);
+        passwordSetter = findViewById(R.id.passwordbtnbox);
 
 
 //        serverClass=new ServerClass();
 //        serverClass.start();
 
-        if (user.equals("receiver"))
-        {
+        if (user.equals("receiver")) {
 
-            clientClass=new ClientClass(address);
+            clientClass = new ClientClass(address);
             clientClass.start();
 
-        }
-        else
-        {
-            serverClass=new ServerClass();
+        } else {
+            serverClass = new ServerClass();
             serverClass.start();
         }
 
@@ -97,16 +104,55 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        };
 
+        passwordSet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    passwordsetterLinearLayout.setVisibility(View.VISIBLE);
+                } else {
+                    password = null;
+                    Toast.makeText(MainActivity.this, "Password removed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        passwordSetter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (!inputPasswordBox.getText().toString().isEmpty()) {
+                    password = inputPasswordBox.getText().toString();
+                    passwordsetterLinearLayout.setVisibility(View.GONE);
+                    Toast.makeText(MainActivity.this, "Password Set", Toast.LENGTH_SHORT).show();
+                } else {
+                    inputPasswordBox.setError("Enter Password");
+                }
+
+            }
+        });
+
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String msg=mssg.getText().toString();
+                String msg = mssg.getText().toString();
 
-                byte[] cipherText= aes.encrypt(msg,"asdfg");
+                if (passwordSet.isChecked()) {
+                    if (password != null) {
+                        byte[] cipherText = aes.encrypt(msg, password);
+                        ObjectModal objectModal = new ObjectModal(cipherText);
+                        sendReceive.writeObject(objectModal);
+                    } else {
+                        inputPasswordBox.setError("Enter Password");
+                    }
+                } else {
+                    ObjectModal objectModal = new ObjectModal(msg.getBytes());
+                    sendReceive.writeObject(objectModal);
+                }
+
 //                sendReceive.write(msg.getBytes());
-                ObjectModal objectModal= new ObjectModal(cipherText);
-                sendReceive.writeObject(objectModal);
+
 
             }
         });
@@ -118,23 +164,34 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
 
-            switch(msg.what)
-            {
+            switch (msg.what) {
                 case MESSAGE_READ:
 
 //                    byte[] readBuff= (byte[]) msg.obj;
 //                    String tempMsg= new String(readBuff,0,msg.arg1);
 
-                    ObjectModal ob= (ObjectModal) msg.obj;
-                    String tempMsg=aes.decrypt(ob.getCipertext(),"asdfg");
-                    temp_message.setText(tempMsg);
+                    ObjectModal ob = (ObjectModal) msg.obj;
+                    if (passwordSet.isChecked()) {
+                        if (password != null) {
+                            String tempMsg = aes.decrypt(ob.getCipertext(), password);
+                            temp_message.setText(tempMsg);
+                        } else {
+                            String tempMsg = new String(ob.getCipertext(), StandardCharsets.UTF_8);
+                            temp_message.setText(tempMsg);
+                            Toast.makeText(MainActivity.this, "if the message is encrypted, kindly set the password and ask the sender to resend the message.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        String tempMsg = new String(ob.getCipertext(), StandardCharsets.UTF_8);
+                        temp_message.setText(tempMsg);
+                    }
+
                     break;
             }
             return true;
         }
     });
-    public class ServerClass extends Thread
-    {
+
+    public class ServerClass extends Thread {
         Socket socket;
         ServerSocket serverSocket;
 
@@ -142,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
 
             try {
-                serverSocket=new ServerSocket(8888);
-                socket=serverSocket.accept();
-                sendReceive=new SendReceive(socket);
+                serverSocket = new ServerSocket(8888);
+                socket = serverSocket.accept();
+                sendReceive = new SendReceive(socket);
                 sendReceive.start();
 
             } catch (IOException e) {
@@ -156,25 +213,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    public class SendReceive extends Thread
-    {
+    public class SendReceive extends Thread {
         private Socket socket;
         private InputStream inputStream;
         private OutputStream outputStream;
         private ObjectOutputStream objectOutputStream;
         private ObjectInputStream objectInputStream;
-        ObjectModal obj=null;
+        ObjectModal obj = null;
 
-        public SendReceive(Socket skt)
-        {
-            socket=skt;
+        public SendReceive(Socket skt) {
+            socket = skt;
             try {
 
-                inputStream=socket.getInputStream();
-                outputStream=socket.getOutputStream();
-                objectOutputStream=new ObjectOutputStream(outputStream);
-                objectInputStream=new ObjectInputStream(inputStream);
+                inputStream = socket.getInputStream();
+                outputStream = socket.getOutputStream();
+                objectOutputStream = new ObjectOutputStream(outputStream);
+                objectInputStream = new ObjectInputStream(inputStream);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -212,64 +266,60 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void write(final byte[] bytes)
-        {
+        public void write(final byte[] bytes) {
 //            try {
 //                outputStream.write(bytes);
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-            new Thread(new Runnable(){
+            new Thread(new Runnable() {
 
                 @Override
-                public void run()
-                {
-                    try
-                    {
+                public void run() {
+                    try {
                         outputStream.write(bytes);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    catch (IOException e)
-                    {e.printStackTrace();}
-                }}).start();
+                }
+            }).start();
 
 
         }
-        public void writeObject(final ObjectModal object)
-        {
 
-            new Thread(new Runnable(){
+        public void writeObject(final ObjectModal object) {
+
+            new Thread(new Runnable() {
 
                 @Override
-                public void run()
-                {
+                public void run() {
                     try {
                         objectOutputStream.writeObject(object);
                     } catch (IOException e) {
                         Toast.makeText(MainActivity.this, "Can't send Object", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-                }}).start();
+                }
+            }).start();
 
         }
     }
 
-    public  class ClientClass extends Thread
-    {
+    public class ClientClass extends Thread {
         Socket socket;
         String hostadd;
 
-        public ClientClass(InetAddress hostAddress)
-        {
-            hostadd=hostAddress.getHostAddress();
-            socket=new Socket();
+        public ClientClass(InetAddress hostAddress) {
+            hostadd = hostAddress.getHostAddress();
+            socket = new Socket();
 
         }
 
         @Override
         public void run() {
             try {
-                socket.connect(new InetSocketAddress(hostadd,8888),0);
-                sendReceive= new SendReceive(socket);
+                socket.connect(new InetSocketAddress(hostadd, 8888), 0);
+                sendReceive = new SendReceive(socket);
                 sendReceive.start();
 
             } catch (IOException e) {
