@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "772065030149",
+    "firebase_url": "https://sicura-share.firebaseio.com",
+    "project_id": "sicura-share",
+    "storage_bucket": "sicura-share.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772065030149:android:58162753e5d0cf7ee16c6c",
+        "android_client_info": {
+          "package_name": "com.example.sicurashare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "772065030149-ga57lr8h93us4oa39jup1vatbsupedrq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sicurashare",
+            "certificate_hash": "8b18b45909ab4b84d50b353d1c7d9dd682e926d4"
+          }
+        },
+        {
+          "client_id": "772065030149-l1u7qb9j24jtgip4d2v4i2ubt5e4lnb7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtiAksRU8DII2B353yXVufdUc2Lg44RF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "772065030149-l1u7qb9j24jtgip4d2v4i2ubt5e4lnb7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

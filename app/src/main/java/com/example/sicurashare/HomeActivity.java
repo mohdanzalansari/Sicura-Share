@@ -10,10 +10,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
-    Button sendBtn,receiveBtn;
+    Button sendBtn,receiveBtn,logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,17 @@ public class HomeActivity extends AppCompatActivity {
 
         sendBtn=findViewById(R.id.sendBtnBox);
         receiveBtn=findViewById(R.id.receiveBtnBox);
+        logout=(Button)findViewById(R.id.logout_button);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(HomeActivity.this,"Logged Out Successfully",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(HomeActivity.this,login_activity.class));
+                finish();
+            }
+        });
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
