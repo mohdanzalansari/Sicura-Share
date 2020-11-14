@@ -25,6 +25,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     TextView temp_message;
     EditText mssg;
     CheckBox passwordSet;
+
+    DatabaseHelper mdb;
 
     private static String password = null;
 
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         inputPasswordBox = findViewById(R.id.passwordBox);
         passwordSetter = findViewById(R.id.passwordbtnbox);
 
+        mdb= new DatabaseHelper(this);
 
 //        serverClass=new ServerClass();
 //        serverClass.start();
@@ -151,6 +156,13 @@ public class MainActivity extends AppCompatActivity {
                     sendReceive.writeObject(objectModal);
                 }
 
+
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("EEEE , dd-MMM-yyyy   hh:mm a");
+                String datetime = sdf.format(cal.getTime());
+
+                mdb.insertData("A message is sent.", datetime);
+
 //                sendReceive.write(msg.getBytes());
 
 
@@ -184,6 +196,12 @@ public class MainActivity extends AppCompatActivity {
                         String tempMsg = new String(ob.getCipertext(), StandardCharsets.UTF_8);
                         temp_message.setText(tempMsg);
                     }
+
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE , dd-MMM-yyyy   hh:mm a");
+                    String datetime = sdf.format(cal.getTime());
+
+                    mdb.insertData("A message is received.", datetime);
 
                     break;
             }

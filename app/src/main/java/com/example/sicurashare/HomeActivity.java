@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
-    Button sendBtn,receiveBtn,logout;
+    Button sendBtn,receiveBtn,logout,historyButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
         sendBtn=findViewById(R.id.sendBtnBox);
         receiveBtn=findViewById(R.id.receiveBtnBox);
         logout=(Button)findViewById(R.id.logout_button);
+        historyButton=findViewById(R.id.hist_button);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +57,16 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(HomeActivity.this,LobbyActivity.class);
                 intent.putExtra("user","receiver");
+                startActivity(intent);
+            }
+        });
+
+
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(HomeActivity.this,HistoryActivity.class);
+
                 startActivity(intent);
             }
         });
