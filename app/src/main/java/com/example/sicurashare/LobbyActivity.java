@@ -3,7 +3,9 @@ package com.example.sicurashare;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
@@ -48,10 +50,9 @@ public class LobbyActivity extends AppCompatActivity {
 
     ListView listView;
 
-    List<WifiP2pDevice> peers= new ArrayList<WifiP2pDevice>();
+    List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
     String[] deviceNameArray;
     WifiP2pDevice[] deviceArray;
-
 
 
     @Override
@@ -63,13 +64,13 @@ public class LobbyActivity extends AppCompatActivity {
         final String user = getIntent().getStringExtra("user");
 
 
-        wifiManager= (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifiP2pManager= (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        channel= wifiP2pManager.initialize(this,getMainLooper(),null);
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = wifiP2pManager.initialize(this, getMainLooper(), null);
 
-        receiver=new WifiBroadcastReceiver(wifiP2pManager, channel, this);
-//        broadcastReceiver=new WifiBroadcastReceiver(wifiP2pManager,channel,this);
-        intentFilter=new IntentFilter();
+        receiver = new WifiBroadcastReceiver(wifiP2pManager, channel, this);
+
+        intentFilter = new IntentFilter();
 
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -77,20 +78,16 @@ public class LobbyActivity extends AppCompatActivity {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
 
-        status=findViewById(R.id.status_box);
+        status = findViewById(R.id.status_box);
 
-        listView=findViewById(R.id.device_array);
-
-
-
+        listView = findViewById(R.id.device_array);
 
 
         //Actions start from here...
 
         //Enabling the wifi if wifi is off
 
-        if(!wifiManager.isWifiEnabled())
-        {
+        if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
         }
 
@@ -98,13 +95,10 @@ public class LobbyActivity extends AppCompatActivity {
         wifiP2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                if (user.equals("receiver"))
-                {
+                if (user.equals("receiver")) {
                     status.setText("Waiting for Sender...");
                     listView.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     status.setText("Discovering Receiver...");
                 }
             }
@@ -119,106 +113,120 @@ public class LobbyActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                final WifiP2pDevice device=deviceArray[i];
-                WifiP2pConfig config= new WifiP2pConfig();
-                config.deviceAddress=device.deviceAddress;
+                final WifiP2pDevice device = deviceArray[i];
+                WifiP2pConfig config = new WifiP2pConfig();
+                config.deviceAddress = device.deviceAddress;
 
                 wifiP2pManager.connect(channel, config, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(getApplicationContext(),"Connected to "+device.deviceName,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Connecting to " + device.deviceName, Toast.LENGTH_SHORT).show();
 
 
                     }
 
                     @Override
                     public void onFailure(int i) {
-                        Toast.makeText(getApplicationContext(),"Can't Connect",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
 
 
-
     }
 
-    WifiP2pManager.PeerListListener peerListListener= new WifiP2pManager.PeerListListener() {
+    WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList wifiPeerList) {
 
 
-            if (! wifiPeerList.getDeviceList().equals(peers)) {
+            if (!wifiPeerList.getDeviceList().equals(peers)) {
                 peers.clear();
-                peers.addAll( wifiPeerList.getDeviceList());
+                peers.addAll(wifiPeerList.getDeviceList());
 
-                deviceNameArray=new String[wifiPeerList.getDeviceList().size()];
-                deviceArray=new WifiP2pDevice[ wifiPeerList.getDeviceList().size()];
+                deviceNameArray = new String[wifiPeerList.getDeviceList().size()];
+                deviceArray = new WifiP2pDevice[wifiPeerList.getDeviceList().size()];
 
-                int index=0;
+                int index = 0;
 
-                for (WifiP2pDevice device: wifiPeerList.getDeviceList())
-                {
-                    deviceNameArray[index]=device.deviceName;
-                    deviceArray[index]=device;
+                for (WifiP2pDevice device : wifiPeerList.getDeviceList()) {
+                    deviceNameArray[index] = device.deviceName;
+                    deviceArray[index] = device;
                     index++;
                 }
-                ArrayAdapter<String> adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,deviceNameArray);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, deviceNameArray);
                 listView.setAdapter(adapter);
 
             }
 
-            if (peers.size()==0)
-            {
-                Toast.makeText(getApplicationContext(),"No Device Found",Toast.LENGTH_SHORT).show();
+            if (peers.size() == 0) {
+                Toast.makeText(getApplicationContext(), "No Device Found", Toast.LENGTH_SHORT).show();
             }
         }
     };
 
 
-    WifiP2pManager.ConnectionInfoListener connectionInfoListener= new WifiP2pManager.ConnectionInfoListener() {
+    WifiP2pManager.ConnectionInfoListener connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-            final InetAddress groupOwnerAddress =wifiP2pInfo.groupOwnerAddress;
+            final InetAddress groupOwnerAddress = wifiP2pInfo.groupOwnerAddress;
 
-            if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner)
-            {
-//                status.setText("Host");
-//                serverClass=new ServerClass();
-//                serverClass.start();
-
-                Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
-                intent.putExtra("inetaddress",groupOwnerAddress);
-                intent.putExtra("user","sender");
-                startActivity(intent);
-                finish();
+            if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner) {
 
 
-            }
-            else if(wifiP2pInfo.groupFormed)
-            {
+                showAlertDialog(groupOwnerAddress, "sender");
 
 
-                Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
-                intent.putExtra("inetaddress",groupOwnerAddress);
-                intent.putExtra("user","receiver");
-                startActivity(intent);
-                finish();
+            } else if (wifiP2pInfo.groupFormed) {
 
-//                status.setText("Client");
-//                clientClass=new ClientClass(groupOwnerAddress);
-//                clientClass.start();
+                showAlertDialog(groupOwnerAddress, "receiver");
 
             }
         }
     };
+
+    private void showAlertDialog(final InetAddress thisgroupOwnerAddress, final String user) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(LobbyActivity.this);
+        alertDialog.setTitle("Select Activity");
+        String[] items = {"Messaging", "File Transfer"};
+        int checkedItem = 9;
+        alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int itemselected) {
+                switch (itemselected) {
+                    case 0:
+                        Toast.makeText(LobbyActivity.this, "Launching Message Activity", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(LobbyActivity.this, MessagingActivity.class);
+                        intent.putExtra("inetaddress", thisgroupOwnerAddress);
+                        intent.putExtra("user", user);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case 1:
+                        Toast.makeText(LobbyActivity.this, "Launching File Transfer Activity", Toast.LENGTH_LONG).show();
+                        Intent intent1 = new Intent(LobbyActivity.this, MainActivity.class);
+                        intent1.putExtra("inetaddress", thisgroupOwnerAddress);
+                        intent1.putExtra("user", user);
+                        startActivity(intent1);
+                        finish();
+                        break;
+
+                }
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
+    }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        receiver=new WifiBroadcastReceiver(wifiP2pManager, channel, this);
-        registerReceiver(receiver,intentFilter);
+        receiver = new WifiBroadcastReceiver(wifiP2pManager, channel, this);
+        registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -228,7 +236,6 @@ public class LobbyActivity extends AppCompatActivity {
         unregisterReceiver(receiver);
 
     }
-
 
 
 }
