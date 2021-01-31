@@ -139,28 +139,37 @@ public class MessagingActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
                 String datetime = sdf.format(cal.getTime());
                 String msg = messageBox.getText().toString();
-                MessageObject newMessage = null;
-                if (isPasswordSet) {
-                    if ((!password.equals("")) || (password != null)) {
-                        msg = aes.encrypt(msg, password);
-                        newMessage = new MessageObject(msg, datetime, "send", true);
-                        msg = "1" + msg;
+                if(msg.isEmpty())
+                {
+                    messageBox.setError("Enter some message to send");
+                }
+                else
+                {
+                    MessageObject newMessage = null;
+                    if (isPasswordSet) {
+                        if ((!password.equals("")) || (password != null)) {
+                            msg = aes.encrypt(msg, password);
+                            newMessage = new MessageObject(msg, datetime, "send", true);
+                            msg = "1" + msg;
+                        } else {
+                            Toast.makeText(MessagingActivity.this, "Set Password first.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     } else {
-                        Toast.makeText(MessagingActivity.this, "Set Password first.", Toast.LENGTH_SHORT).show();
-                        return;
+                        newMessage = new MessageObject(msg, datetime, "send", false);
+                        msg = "0" + msg;
                     }
-                } else {
-                    newMessage = new MessageObject(msg, datetime, "send", false);
-                    msg = "0" + msg;
+                    if (newMessage != null) {
+                        messageList.add(newMessage);
+                        sendReceive.write(msg.getBytes());
+                        messageBox.setText("");
+                        mdb.insertData("A message is sent.", datetime);
+                        message_list_adapter.notifyDataSetChanged();
+                        message_list_layout_manager.scrollToPosition(messageList.size() - 1);
+                    }
                 }
-                if (newMessage != null) {
-                    messageList.add(newMessage);
-                    sendReceive.write(msg.getBytes());
-                    messageBox.setText("");
-                    mdb.insertData("A message is sent.", datetime);
-                    message_list_adapter.notifyDataSetChanged();
-                    message_list_layout_manager.scrollToPosition(messageList.size() - 1);
-                }
+
+
             }
 
         });
