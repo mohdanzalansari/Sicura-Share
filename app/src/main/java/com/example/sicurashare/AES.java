@@ -1,12 +1,22 @@
 package com.example.sicurashare;
 
 
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
@@ -62,6 +72,42 @@ public class AES {
         String decryptedValue=new String(decValue);
         return decryptedValue;
 
+
+    }
+
+    public   void encryptFile(final InputStream in, OutputStream out,String password) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+
+        SecretKeySpec sks = generateKey(password);
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, sks);
+        CipherOutputStream cos = new CipherOutputStream(out, cipher);
+        int b;
+        byte[] d = new byte[1024];
+        while((b = in.read(d)) != -1) {
+            cos.write(d, 0, b);
+        }
+
+        cos.flush();
+        cos.close();
+        in.close();
+
+    }
+
+    public   void decryptfile(final InputStream in, OutputStream out,String password) throws Exception {
+
+
+        SecretKeySpec sks = generateKey(password);
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, sks);
+        CipherInputStream cis = new CipherInputStream(in, cipher);
+        int b;
+        byte[] d = new byte[1024];
+        while((b = cis.read(d)) != -1) {
+            out.write(d, 0, b);
+        }
+        out.flush();
+        out.close();
+        cis.close();
 
     }
 
