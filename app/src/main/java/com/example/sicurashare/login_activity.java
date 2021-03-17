@@ -48,7 +48,7 @@ public class login_activity extends AppCompatActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser()!=null)
         {
-            Intent intent= new Intent(login_activity.this, HomeActivity.class);
+            Intent intent= new Intent(login_activity.this, WelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
@@ -97,7 +97,7 @@ public class login_activity extends AppCompatActivity {
                 public void onSuccess(AuthResult authResult) {
                     mProgress.dismiss();
                     Toast.makeText(login_activity.this,"Login Successful!",Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(login_activity.this,HomeActivity.class));
+                    startActivity(new Intent(login_activity.this,WelcomeActivity.class));
                     finish();
 
                 }
