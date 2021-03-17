@@ -1,7 +1,9 @@
 package com.example.sicurashare;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,8 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class login_activity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-    private TextView text;
+    private TextView text,forgotPass;
     private Button login;
     private EditText id,pass;
     private ProgressDialog mProgress;
@@ -38,6 +42,7 @@ public class login_activity extends AppCompatActivity {
         id=(EditText)findViewById(R.id.user_id);
         pass=(EditText)findViewById(R.id.user_pass);
         login=(Button)findViewById(R.id.login_button);
+        forgotPass=findViewById(R.id.forgotpassBox);
         auth=FirebaseAuth.getInstance();
 
         mProgress = new ProgressDialog(login_activity.this);
@@ -67,6 +72,54 @@ public class login_activity extends AppCompatActivity {
             public void onClick(View view) {
                 mProgress.show();
                 user_login();
+            }
+        });
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText resetmail=new EditText(view.getContext());
+
+                AlertDialog.Builder passwordResetDialogBox= new AlertDialog.Builder(view.getContext());
+                passwordResetDialogBox.setTitle("Reset Password?");
+                passwordResetDialogBox.setMessage("Enter your email to receive the password reset link");
+                passwordResetDialogBox.setView(resetmail);
+
+                passwordResetDialogBox.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        if (!resetmail.getText().toString().isEmpty())
+                        {
+                            String mail=resetmail.getText().toString();
+                            auth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(login_activity.this, "Password Reset Link has been sent to your email.", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(login_activity.this, "Something went wrong!\n"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        else {
+                            resetmail.setError("Enter mail id");
+                        }
+
+                    }
+                });
+
+                passwordResetDialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                passwordResetDialogBox.create().show();
+
             }
         });
 
