@@ -47,10 +47,10 @@ public class FileEncyptionFragment  extends Fragment {
     LinearLayout otherBtnLinearLayout,PassLinearLayout;
     EditText passwordBox;
 
-    private int Pick_image_intent = 1;
-    private int Pick_video_intent=2;
-    private int Pick_audio_intent=3;
-    private int Pick_other_intent=4;
+    private final int Pick_image_intent = 1;
+    private final int Pick_video_intent=2;
+    private final int Pick_audio_intent=3;
+    private final int Pick_other_intent=4;
 
     private String password=null;
 
@@ -201,7 +201,7 @@ public class FileEncyptionFragment  extends Fragment {
         Intent intent = new Intent();
         intent.setType("file/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","file intent");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), Pick_other_intent);
     }
@@ -210,7 +210,7 @@ public class FileEncyptionFragment  extends Fragment {
         Intent intent = new Intent();
         intent.setType("audio/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","audio intent");
         startActivityForResult(Intent.createChooser(intent, "Select Audio"), Pick_audio_intent);
     }
@@ -219,7 +219,7 @@ public class FileEncyptionFragment  extends Fragment {
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","video intent");
         startActivityForResult(Intent.createChooser(intent, "Select Video"), Pick_video_intent);
     }
@@ -230,7 +230,7 @@ public class FileEncyptionFragment  extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","image intent");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), Pick_image_intent);
 

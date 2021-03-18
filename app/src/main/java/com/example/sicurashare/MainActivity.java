@@ -63,16 +63,16 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> dataList;
 
-    private int Pick_image_intent = 1;
-    private int Pick_video_intent=2;
-    private int Pick_audio_intent=3;
-    private int Pick_other_intent=4;
+    private final int Pick_image_intent = 1;
+    private final int Pick_video_intent=2;
+    private final int Pick_audio_intent=3;
+    private final int Pick_other_intent=4;
 
 
     private ArrayList<String> mediaURIlist;
     ArrayAdapter arrayAdapter;
 
-    private static String password = null;
+    private static final String password = null;
 
     LinearLayout passwordsetterLinearLayout;
     EditText inputPasswordBox;
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         audio_send_btn=findViewById(R.id.audio_button);
         other_send_btn=findViewById(R.id.other_button);
 
-//        temp_message = findViewById(R.id.temp_msg);
 
 
         mssg = findViewById(R.id.message);
@@ -110,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
         dataList=new ArrayList<>();
 
-//        serverClass=new ServerClass();
-//        serverClass.start();
 
         if (user.equals("receiver")) {
 
@@ -124,42 +121,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        passwordSet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    passwordsetterLinearLayout.setVisibility(View.VISIBLE);
-                } else {
-                    password = null;
-                    Toast.makeText(MainActivity.this, "Password removed", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        passwordSetter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                if (!inputPasswordBox.getText().toString().isEmpty()) {
-                    password = inputPasswordBox.getText().toString();
-                    passwordsetterLinearLayout.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "Password Set", Toast.LENGTH_SHORT).show();
-                } else {
-                    inputPasswordBox.setError("Enter Password");
-                }
-
-            }
-        });
-
         image_send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Log.i("note","button clicked");
                 openImageSelectorActivity();
-
-
 
             }
         });
@@ -192,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("file/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","file intent");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), Pick_other_intent);
     }
@@ -201,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("audio/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","audio intent");
         startActivityForResult(Intent.createChooser(intent, "Select Audio"), Pick_audio_intent);
     }
@@ -210,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","video intent");
         startActivityForResult(Intent.createChooser(intent, "Select Video"), Pick_video_intent);
     }
@@ -221,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         Log.i("note","image intent");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), Pick_image_intent);
 
@@ -286,12 +253,11 @@ public class MainActivity extends AppCompatActivity {
                 is=getApplicationContext().getContentResolver().openInputStream(Uri.parse(mediaURIlist.get(0)));
 
             } catch (FileNotFoundException e) {
-                Log.i("no","no input strea for file");
 
                 Toast.makeText(MainActivity.this,"Can't send file. \nPlease restart the app and try again later.",Toast.LENGTH_SHORT).show();
                 return;
             }
-            Log.i("note","going to send file");
+
 
 
             sendReceive.sendImage(is,null);
@@ -316,13 +282,6 @@ public class MainActivity extends AppCompatActivity {
 
             switch (msg.what) {
                 case MESSAGE_READ:
-
-//                    byte[] readBuff= (byte[]) msg.obj;
-//                    String tempMsg= new String(readBuff,0,msg.arg1);
-
-                    Log.i("note","in handler");
-
-
 
                     Calendar cal = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("EEEE , dd-MMM-yyyy   hh:mm a");
@@ -385,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public class SendReceive extends Thread {
-        private Socket socket;
+        private final Socket socket;
         private InputStream inputStream;
         private OutputStream outputStream;
         private ObjectOutputStream objectOutputStream;
@@ -412,23 +371,20 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    byte buf[] = new byte[1024];
+                    byte[] buf = new byte[1024];
                     int len;
 
 
-                    Log.i("note","in send file");
                     try {
                         while ((len = in.read(buf)) != -1) {
 
 
                             outputStream.write(buf, 0, len);
-                            Log.i("note","in loop send");
-                            Log.i("note",String.valueOf(len));
+
 
                         }
                         in.close();
 
-                        Log.i("note","in send file, file end");
                     } catch (IOException e) {
 
                         try {
@@ -443,13 +399,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("note","in send file, exception",e);
 
                     }
-//                    finally {
-//                        try {
-//                            socket.close();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
+
 
                 }
             }).start();
@@ -498,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    Log.i("note++++++++",fileName);
+
 
                     File filepath = Environment.getExternalStorageDirectory();
                     File dir =new File(filepath.getAbsolutePath()+"/SicuraShare/"+folderType+"/");
@@ -515,40 +465,29 @@ public class MainActivity extends AppCompatActivity {
                     file.createNewFile();
 
                     FileOutputStream fo=new FileOutputStream(file);
-                    byte buf[] = new byte[1024];
+                    byte[] buf = new byte[1024];
                     int len;
                     int counterBuffer=0;
 
 
-                    Log.i("note","in runnable");
-
 
                     while((len = inputStream.read(buf))!=-1)
                     {
-                        Log.i("note","in loop");
                         counterBuffer=counterBuffer+len;
                         fo.write(buf,0,len);
-                        Log.i("note",String.valueOf(counterBuffer));
                         if (counterBuffer>=fileSize)
                         {
                             break;
                         }
 
                     }
-
-                    Log.i("note","out loop");
                     fo.close();
-                    Log.i("note","in runnable fo close");
+
                     String filePath= file.getAbsolutePath();
 
-
-
-                    Log.i("note","in runnable going to handler");
                     obj=null;
                     ObjectModal objectModal = new ObjectModal(fileName);
                     handler.obtainMessage(MESSAGE_READ, -1, -1, objectModal).sendToTarget();
-
-
 
 
                 }

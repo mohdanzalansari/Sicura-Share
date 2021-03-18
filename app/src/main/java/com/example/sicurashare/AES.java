@@ -1,15 +1,11 @@
 package com.example.sicurashare;
 
 
-import android.os.Environment;
-import android.util.Log;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +25,7 @@ public class AES {
 
 
         final MessageDigest digest=MessageDigest.getInstance("SHA-256");
-        byte[] bytes=password.getBytes("UTF-8");
+        byte[] bytes=password.getBytes(StandardCharsets.UTF_8);
         digest.update(bytes,0,bytes.length);
         byte[] key=digest.digest();
         SecretKeySpec secretKeySpec=new SecretKeySpec(key,"AES");

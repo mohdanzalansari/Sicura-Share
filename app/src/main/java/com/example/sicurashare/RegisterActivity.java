@@ -41,9 +41,9 @@ private FirebaseAuth auth;
 
         auth=FirebaseAuth.getInstance();
 
-        register_button=(Button)findViewById(R.id.signup_button);
-        reg_email=(EditText)findViewById(R.id.register_email);
-        reg_pass=(EditText)findViewById(R.id.register_pass);
+        register_button= findViewById(R.id.signup_button);
+        reg_email= findViewById(R.id.register_email);
+        reg_pass= findViewById(R.id.register_pass);
 
         register_button.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
 
         sendBtn = view.findViewById(R.id.sendBtnBox);
         receiveBtn =  view.findViewById(R.id.receiveBtnBox);
-        logout = (Button)  view.findViewById(R.id.logout_button);
+        logout = view.findViewById(R.id.logout_button);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

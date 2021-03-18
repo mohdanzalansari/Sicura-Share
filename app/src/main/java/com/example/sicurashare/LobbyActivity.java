@@ -1,6 +1,6 @@
 package com.example.sicurashare;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -15,24 +15,15 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,8 +73,6 @@ public class LobbyActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.device_array);
 
-
-        //Actions start from here...
 
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);

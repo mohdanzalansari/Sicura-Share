@@ -311,7 +311,7 @@ public class MessagingActivity extends AppCompatActivity {
     }
 
     public class SendReceive extends Thread {
-        private Socket socket;
+        private final Socket socket;
         private InputStream inputStream;
         private OutputStream outputStream;
         private ObjectOutputStream objectOutputStream;

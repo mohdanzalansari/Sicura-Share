@@ -9,9 +9,9 @@ import android.widget.Toast;
 
 public class WifiBroadcastReceiver extends BroadcastReceiver {
 
-    private WifiP2pManager wifiP2pManager;
-    private WifiP2pManager.Channel channel;
-    private LobbyActivity lobbyActivity;
+    private final WifiP2pManager wifiP2pManager;
+    private final WifiP2pManager.Channel channel;
+    private final LobbyActivity lobbyActivity;
 
 
     public WifiBroadcastReceiver(WifiP2pManager wifiP2pManager, WifiP2pManager.Channel channel, LobbyActivity lobbyActivity) {
@@ -27,11 +27,9 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
         String action = intent.getAction();
 
-        if (wifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action))
+        if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action))
         {
-            // Determine if Wifi P2P mode is enabled or not, alert
-            // the Activity.
-            int state =intent.getIntExtra(wifiP2pManager.EXTRA_WIFI_STATE,-1);
+            int state =intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE,-1);
 
             if (state==WifiP2pManager.WIFI_P2P_STATE_ENABLED)
             {
@@ -44,26 +42,22 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                 Toast.makeText(context,"Wifi is off",Toast.LENGTH_SHORT).show();
             }
         }
-        else if (wifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action))
+        else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action))
         {
 
-            // The peer list has changed! We should probably do something about
-            // that.
             if (wifiP2pManager !=null)
             {
                 wifiP2pManager.requestPeers(channel, lobbyActivity.peerListListener);
             }
         }
-        else if (wifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
+        else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
 
-            // Connection state changed! We should probably do something about
-            // that.
             if (wifiP2pManager==null)
             {
                 return;
             }
-            NetworkInfo networkInfo=(NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+            NetworkInfo networkInfo= intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected())
             {
                 wifiP2pManager.requestConnectionInfo(channel, lobbyActivity.connectionInfoListener);
@@ -74,7 +68,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             }
 
         }
-        else if (wifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
+        else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
         {
 
         }
