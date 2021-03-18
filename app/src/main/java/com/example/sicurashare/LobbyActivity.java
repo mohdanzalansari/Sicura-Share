@@ -85,12 +85,9 @@ public class LobbyActivity extends AppCompatActivity {
 
         //Actions start from here...
 
-        //Enabling the wifi if wifi is off
-
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
         }
-
 
         wifiP2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
