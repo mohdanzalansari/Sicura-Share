@@ -192,7 +192,7 @@ public class LobbyActivity extends AppCompatActivity {
                         break;
                     case 1:
                         Toast.makeText(LobbyActivity.this, "Launching File Transfer Activity", Toast.LENGTH_LONG).show();
-                        Intent intent1 = new Intent(LobbyActivity.this, MainActivity.class);
+                        Intent intent1 = new Intent(LobbyActivity.this, FileSharingActivity.class);
                         intent1.putExtra("inetaddress", thisgroupOwnerAddress);
                         intent1.putExtra("user", user);
                         startActivity(intent1);

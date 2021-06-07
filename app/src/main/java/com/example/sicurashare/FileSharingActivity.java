@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -18,11 +20,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,11 +42,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class FileSharingActivity extends AppCompatActivity {
 
     static final int MESSAGE_READ = 1;
     static final int ERROR_OCCURED = 2;
 
+    private ProgressDialog mProgress;
 
     ServerClass serverClass;
     ClientClass clientClass;
@@ -85,10 +88,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_file_sharing);
 
         String user = getIntent().getStringExtra("user");
         InetAddress address = (InetAddress) getIntent().getSerializableExtra("inetaddress");
+
+
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         image_send_btn = findViewById(R.id.sendbtn);
         video_send_btn=findViewById(R.id.video_button);
@@ -96,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
         other_send_btn=findViewById(R.id.other_button);
 
 
+        mProgress = new ProgressDialog(FileSharingActivity.this);
+        mProgress.setTitle("Sending...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
 
         mssg = findViewById(R.id.message);
         passwordSet = findViewById(R.id.passwordcheckBox);
@@ -125,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Log.i("note","button clicked");
                 openImageSelectorActivity();
 
             }
@@ -160,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("file/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        Log.i("note","file intent");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), Pick_other_intent);
     }
 
@@ -169,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("audio/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        Log.i("note","audio intent");
         startActivityForResult(Intent.createChooser(intent, "Select Audio"), Pick_audio_intent);
     }
 
@@ -178,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("video/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        Log.i("note","video intent");
         startActivityForResult(Intent.createChooser(intent, "Select Video"), Pick_video_intent);
     }
 
@@ -189,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        Log.i("note","image intent");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), Pick_image_intent);
 
 
@@ -254,24 +261,25 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (FileNotFoundException e) {
 
-                Toast.makeText(MainActivity.this,"Can't send file. \nPlease restart the app and try again later.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(FileSharingActivity.this,"Can't send file. \nPlease restart the app and try again later.",Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            mProgress.show();
 
-
-            sendReceive.sendImage(is,null);
+            sendReceive.sendFile(is,null);
 
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE , dd-MMM-yyyy   hh:mm a");
             String datetime = sdf.format(cal.getTime());
 
             mdb.insertData(fileName+" has been shared", datetime);
-            Toast.makeText(MainActivity.this,fileName+" has been shared",Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(FileSharingActivity.this,fileName+" has been shared",Toast.LENGTH_SHORT).show();
+            mProgress.dismiss();
             dataList.add(fileName+" has been shared");
             arrayAdapter =new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,dataList);
             listView.setAdapter(arrayAdapter);
+
         }
     }
 
@@ -292,9 +300,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                     mdb.insertData(fileName+" has been shared", datetime);
-                    Toast.makeText(MainActivity.this,fileName+" has been received",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FileSharingActivity.this,fileName+" has been received",Toast.LENGTH_SHORT).show();
                     dataList.add(fileName+" has been received");
-                    arrayAdapter =new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,dataList);
+                    arrayAdapter =new ArrayAdapter<String>(FileSharingActivity.this,android.R.layout.simple_list_item_1,dataList);
                     listView.setAdapter(arrayAdapter);
 
                     break;
@@ -303,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
 
                     ObjectModal obx = (ObjectModal) msg.obj;
                     String message = obx.getMsg();
-                    Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FileSharingActivity.this,message,Toast.LENGTH_SHORT).show();
                     break;
 
 
@@ -365,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void sendImage(final InputStream in,OutputStream out)
+        public void sendFile(final InputStream in, OutputStream out)
         {
             new Thread(new Runnable() {
                 @Override

@@ -53,7 +53,7 @@ public class HistoryFragment  extends Fragment {
         {
             while(cursor.moveToNext())
             {
-                list.add(cursor.getString(1)+"\n"+cursor.getString(2)+"\n");
+                list.add("\n"+cursor.getString(1)+"\n\n"+cursor.getString(2)+"\n");
 
             }
             arrayAdapter =new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,list);

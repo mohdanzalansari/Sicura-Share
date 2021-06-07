@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +51,6 @@ private FirebaseAuth auth;
             public void onClick(View view) {
 
                 register_user();
-                mProgress.show();
             }
         });
 
@@ -76,6 +76,7 @@ private FirebaseAuth auth;
         }
         else
         {
+            mProgress.show();
             auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(RegisterActivity.this,new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -93,6 +94,12 @@ private FirebaseAuth auth;
                         Toast.makeText(RegisterActivity.this,"Registration Failed",Toast.LENGTH_SHORT).show();
                     }
 
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgress.dismiss();
+                    Toast.makeText(RegisterActivity.this,e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
                 }
             });
         }

@@ -100,7 +100,7 @@ public class login_activity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(login_activity.this, "Something went wrong!\n"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(login_activity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -154,6 +154,12 @@ public class login_activity extends AppCompatActivity {
                     startActivity(new Intent(login_activity.this,WelcomeActivity.class));
                     finish();
 
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgress.dismiss();
+                    Toast.makeText(login_activity.this,e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
                 }
             });
 

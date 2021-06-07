@@ -2,6 +2,7 @@ package com.example.sicurashare;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,6 +77,8 @@ public class MessagingActivity extends AppCompatActivity {
         String user = getIntent().getStringExtra("user");
         InetAddress address = (InetAddress) getIntent().getSerializableExtra("inetaddress");
 
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         if (user.equals("receiver")) {
 
@@ -374,7 +378,6 @@ public class MessagingActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         try {
                             socket.close();
-                            Log.i("log", String.valueOf(e));
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         } finally {
