@@ -28,7 +28,8 @@
                 android:layout_marginLeft="40sp"
                 android:layout_marginRight="20sp"
                 android:layout_weight="1"
-                android:text="Encrypt" />
+                android:text="Encrypt"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
             <Button
                 android:id="@+id/decrytFileBtnBox"
@@ -37,7 +38,8 @@
                 android:layout_marginLeft="20sp"
                 android:layout_marginRight="40sp"
                 android:layout_weight="1"
-                android:text="Decrypt" />
+                android:text="Decrypt"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
         </LinearLayout>
 
@@ -67,7 +69,8 @@
                 android:layout_marginLeft="20sp"
                 android:layout_marginEnd="20sp"
                 android:layout_weight="1"
-                android:text="Set Password" />
+                android:text="Set Password"
+                style="@style/Widget.AppCompat.Button.Colored"/>
         </LinearLayout>
 
         <LinearLayout
@@ -92,7 +95,8 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:layout_weight="1"
-                    android:text="Image" />
+                    android:text="Image"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
 
                 <Button
                     android:id="@+id/videofileBtnBox"
@@ -100,7 +104,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10sp"
                     android:layout_weight="1"
-                    android:text="Video" />
+                    android:text="Video"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
 
                 <Button
                     android:id="@+id/audiofileBtnBox"
@@ -108,7 +113,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10sp"
                     android:layout_weight="1"
-                    android:text="Audio" />
+                    android:text="Audio"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
 
                 <Button
                     android:id="@+id/otherfileBtnBox"
@@ -116,7 +122,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10sp"
                     android:layout_weight="1"
-                    android:text="Other" />
+                    android:text="Other"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
 
             </LinearLayout>
 
@@ -128,7 +135,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40sp"
             android:text="Cancel"
-            android:visibility="gone" />
+            android:visibility="gone"
+            style="@style/Widget.AppCompat.Button.Colored"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

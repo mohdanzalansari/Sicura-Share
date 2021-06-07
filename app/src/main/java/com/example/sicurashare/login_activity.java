@@ -70,7 +70,7 @@ public class login_activity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProgress.show();
+
                 user_login();
             }
         });
@@ -145,6 +145,7 @@ public class login_activity extends AppCompatActivity {
         }
         else
         {
+            mProgress.show();
             auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                 @Override
                 public void onSuccess(AuthResult authResult) {

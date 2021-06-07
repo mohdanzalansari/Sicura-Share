@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.sicurashare.DatabaseHelper;
 import com.example.sicurashare.LobbyActivity;
 import com.example.sicurashare.R;
 import com.example.sicurashare.login_activity;
@@ -19,7 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeFragment extends Fragment {
 
-    Button sendBtn, receiveBtn, logout, historyButton;
+    Button sendBtn, receiveBtn, logout;
+    DatabaseHelper mdb;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,10 +35,12 @@ public class HomeFragment extends Fragment {
         sendBtn = view.findViewById(R.id.sendBtnBox);
         receiveBtn =  view.findViewById(R.id.receiveBtnBox);
         logout = view.findViewById(R.id.logout_button);
+        mdb= new DatabaseHelper(view.getContext());
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mdb.deleteALL();
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(view.getContext(), "Logged Out Successfully", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getView().getContext(), login_activity.class));

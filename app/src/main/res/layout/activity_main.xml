@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100sp"
             android:layout_marginBottom="40sp"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <Button
@@ -25,21 +26,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
-                android:text="Image" />
+                android:text="Image"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
             <Button
                 android:id="@+id/video_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
-                android:text="Video" />
+                android:text="Video"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
             <Button
                 android:id="@+id/audio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
-                android:text="Audio" />
+                android:text="Audio"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
             <Button
                 android:id="@+id/other_button"
@@ -47,7 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:layout_marginEnd="10sp"
-                android:text="Other" />
+                android:text="Other"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
         </LinearLayout>
 
