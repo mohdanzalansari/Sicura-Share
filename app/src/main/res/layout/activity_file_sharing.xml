@@ -31,7 +31,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:text="Image" />
 
             <Button
@@ -39,7 +39,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:text="Video" />
 
             <Button
@@ -47,7 +47,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:text="Audio" />
 
             <Button
@@ -55,8 +55,8 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
-                android:layout_marginEnd="10sp"
+                android:layout_marginStart="5sp"
+                android:layout_marginEnd="5sp"
                 android:text="Other" />
 
         </LinearLayout>
