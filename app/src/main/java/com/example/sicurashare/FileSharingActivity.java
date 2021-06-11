@@ -47,8 +47,6 @@ public class FileSharingActivity extends AppCompatActivity {
     static final int MESSAGE_READ = 1;
     static final int ERROR_OCCURED = 2;
 
-    private ProgressDialog mProgress;
-
     ServerClass serverClass;
     ClientClass clientClass;
     SendReceive sendReceive;
@@ -102,12 +100,6 @@ public class FileSharingActivity extends AppCompatActivity {
         audio_send_btn=findViewById(R.id.audio_button);
         other_send_btn=findViewById(R.id.other_button);
 
-
-        mProgress = new ProgressDialog(FileSharingActivity.this);
-        mProgress.setTitle("Sending...");
-        mProgress.setMessage("Please wait...");
-        mProgress.setCancelable(false);
-        mProgress.setIndeterminate(true);
 
         mssg = findViewById(R.id.message);
         passwordSet = findViewById(R.id.passwordcheckBox);
@@ -265,8 +257,6 @@ public class FileSharingActivity extends AppCompatActivity {
                 return;
             }
 
-            mProgress.show();
-
             sendReceive.sendFile(is,null);
 
             Calendar cal = Calendar.getInstance();
@@ -275,7 +265,6 @@ public class FileSharingActivity extends AppCompatActivity {
 
             mdb.insertData(fileName+" has been shared", datetime);
             Toast.makeText(FileSharingActivity.this,fileName+" has been shared",Toast.LENGTH_SHORT).show();
-            mProgress.dismiss();
             dataList.add(fileName+" has been shared");
             arrayAdapter =new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,dataList);
             listView.setAdapter(arrayAdapter);
